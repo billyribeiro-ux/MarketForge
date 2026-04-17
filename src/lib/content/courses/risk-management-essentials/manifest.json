@@ -1,0 +1,15 @@
+{
+	"slug": "risk-management-essentials",
+	"lessons": [
+		{
+			"slug": "introduction",
+			"title": "Introduction",
+			"file": "introduction.md"
+		},
+		{
+			"slug": "position-sizing",
+			"title": "Position sizing basics",
+			"file": "position-sizing.md"
+		}
+	]
+}

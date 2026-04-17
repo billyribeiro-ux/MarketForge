@@ -1,0 +1,6 @@
+# MarketForge — Institutional Trend Framework (Thinkorswim thinkScript starter)
+declare upper;
+input fastLength = 21;
+input slowLength = 55;
+plot Fast = ExpAverage(close, fastLength);
+plot Slow = ExpAverage(close, slowLength);

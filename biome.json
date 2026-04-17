@@ -1,0 +1,40 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.4.12/schema.json",
+	"files": {
+		"ignoreUnknown": true,
+		"includes": [
+			"**/*.ts",
+			"**/*.js",
+			"**/*.json",
+			"!**/node_modules",
+			"!**/.svelte-kit",
+			"!**/build",
+			"!**/dist",
+			"!**/coverage",
+			"!**/test-results",
+			"!**/playwright-report",
+			"!**/backups",
+			"!**/drizzle",
+			"!**/src/lib/icons/generated"
+		]
+	},
+	"formatter": {
+		"enabled": true,
+		"indentStyle": "tab"
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"style": {
+				"noNonNullAssertion": "off"
+			}
+		}
+	},
+	"javascript": {
+		"formatter": {
+			"quoteStyle": "single",
+			"semicolons": "always"
+		}
+	}
+}

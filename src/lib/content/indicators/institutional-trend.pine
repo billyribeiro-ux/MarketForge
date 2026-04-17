@@ -1,0 +1,12 @@
+// MarketForge — Institutional Trend Framework (Pine Script v5 starter)
+// Dual EMA regime filter; extend with your own entry logic.
+//@version=5
+indicator("Institutional Trend Framework", overlay = true, shorttitle = "MF Trend")
+fastLen = input.int(21, "Fast EMA length", minval = 1)
+slowLen = input.int(55, "Slow EMA length", minval = 1)
+emaFast = ta.ema(close, fastLen)
+emaSlow = ta.ema(close, slowLen)
+trendUp = emaFast > emaSlow
+bgcolor(trendUp ? color.new(color.teal, 91) : color.new(color.maroon, 91))
+plot(emaFast, "Fast EMA", color = color.teal)
+plot(emaSlow, "Slow EMA", color = color.maroon)
