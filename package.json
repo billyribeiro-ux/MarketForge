@@ -6,9 +6,9 @@
 	"packageManager": "pnpm@10.33.0",
 	"scripts": {
 		"preinstall": "npx only-allow pnpm",
-		"dev": "vite dev",
+		"dev": "dotenv -e .env.local -- vite dev",
 		"build": "SVELTEKIT_BUILD_PLACEHOLDER_DB=1 vite build",
-		"preview": "vite preview",
+		"preview": "dotenv -e .env.local -- vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"icons:generate": "tsx scripts/generate-icons.ts",
 		"prebuild": "pnpm icons:generate",

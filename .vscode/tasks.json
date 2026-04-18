@@ -1,0 +1,105 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "MarketForge: Postgres (Docker up)",
+			"type": "shell",
+			"command": "docker compose up -d",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "MarketForge: DB migrate & seed",
+			"type": "shell",
+			"command": "pnpm db:migrate && pnpm db:seed",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "MarketForge: Dev server",
+			"type": "shell",
+			"command": "pnpm dev",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"isBackground": true,
+			"problemMatcher": {
+				"owner": "vite",
+				"pattern": { "regexp": "^$" },
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": "VITE",
+					"endsPattern": "http://localhost:5173"
+				}
+			}
+		},
+		{
+			"label": "MarketForge: Open app in Simple Browser (IDE)",
+			"type": "shell",
+			"command": "echo ${input:openSimpleBrowser5173}",
+			"presentation": {
+				"reveal": "silent",
+				"panel": "shared",
+				"showReuseMessage": false,
+				"close": true
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "MarketForge: Postgres + Dev server",
+			"dependsOrder": "sequence",
+			"dependsOn": [
+				"MarketForge: Postgres (Docker up)",
+				"MarketForge: Dev server"
+			],
+			"problemMatcher": []
+		},
+		{
+			"label": "MarketForge: Postgres + Dev + Simple Browser (IDE)",
+			"dependsOrder": "sequence",
+			"dependsOn": [
+				"MarketForge: Postgres (Docker up)",
+				"MarketForge: Dev server",
+				"MarketForge: Open app in Simple Browser (IDE)"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "MarketForge: Full setup (Postgres + migrate + seed + Dev)",
+			"dependsOrder": "sequence",
+			"dependsOn": [
+				"MarketForge: Postgres (Docker up)",
+				"MarketForge: DB migrate & seed",
+				"MarketForge: Dev server"
+			],
+			"problemMatcher": []
+		},
+		{
+			"label": "MarketForge: Full setup + Simple Browser (IDE)",
+			"dependsOrder": "sequence",
+			"dependsOn": [
+				"MarketForge: Postgres (Docker up)",
+				"MarketForge: DB migrate & seed",
+				"MarketForge: Dev server",
+				"MarketForge: Open app in Simple Browser (IDE)"
+			],
+			"problemMatcher": []
+		}
+	],
+	"inputs": [
+		{
+			"id": "openSimpleBrowser5173",
+			"type": "command",
+			"command": "simpleBrowser.api.open",
+			"args": ["http://localhost:5173/"]
+		}
+	]
+}

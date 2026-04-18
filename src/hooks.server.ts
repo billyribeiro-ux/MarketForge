@@ -9,6 +9,20 @@ import { loadAuthLocals } from '$lib/server/auth/load-locals';
 import { logger } from '$lib/server/logger';
 import { startOutboxTicker } from '$lib/server/outbox-dispatcher';
 
+/** Browsers probe these paths before reading `<link rel="icon">`; we only ship SVG. */
+const LEGACY_ICON_PATHS = new Set([
+	`/favicon.ico`,
+	`/apple-touch-icon.png`,
+	`/apple-touch-icon-precomposed.png`,
+]);
+
+const handleLegacyIconPaths: Handle = async ({ event, resolve }) => {
+	if (LEGACY_ICON_PATHS.has(event.url.pathname)) {
+		return Response.redirect(new URL(`/favicon.svg`, event.url), 302);
+	}
+	return resolve(event);
+};
+
 const serverSentryDsn =
 	process.env.SENTRY_DSN?.trim() ||
 	process.env.PUBLIC_SENTRY_DSN?.trim() ||
@@ -41,7 +55,11 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 	return svelteKitHandler({ auth, event, resolve, building });
 };
 
-export const handle = sequence(Sentry.sentryHandle(), handleAuth);
+export const handle = sequence(
+	Sentry.sentryHandle(),
+	handleLegacyIconPaths,
+	handleAuth,
+);
 
 const logServerError: HandleServerError = ({
 	error,
@@ -49,6 +67,9 @@ const logServerError: HandleServerError = ({
 	status,
 	message,
 }) => {
+	if (status === 404 && LEGACY_ICON_PATHS.has(event.url.pathname)) {
+		return;
+	}
 	const err = error instanceof Error ? error : new Error(String(error));
 	logger.error(
 		{

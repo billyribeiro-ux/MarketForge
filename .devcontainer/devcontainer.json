@@ -1,0 +1,25 @@
+{
+	"name": "MarketForge",
+	"image": "mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm",
+	"features": {
+		"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+			"moby": true
+		}
+	},
+	"forwardPorts": [5173, 5433],
+	"portsAttributes": {
+		"5173": { "label": "Vite dev" },
+		"5433": { "label": "Postgres (host)" }
+	},
+	"remoteEnv": {
+		"DATABASE_URL": "postgres://marketforge:marketforge@host.docker.internal:5433/marketforge",
+		"DIRECT_DATABASE_URL": "postgres://marketforge:marketforge@host.docker.internal:5433/marketforge"
+	},
+	"postCreateCommand": "corepack enable && corepack prepare pnpm@10.33.0 --activate && pnpm install",
+	"postStartCommand": "docker compose up -d",
+	"customizations": {
+		"vscode": {
+			"extensions": ["svelte.svelte-vscode"]
+		}
+	}
+}

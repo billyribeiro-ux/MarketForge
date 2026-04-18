@@ -30,6 +30,32 @@ interface TickerState {
 	pendingKick: boolean;
 }
 
+let lastDbUnreachableLogMs = 0;
+const DB_UNREACHABLE_LOG_INTERVAL_MS = 60_000;
+
+function isDbUnreachable(err: unknown): boolean {
+	let e: unknown = err;
+	const seen = new Set<unknown>();
+	while (e instanceof Error && !seen.has(e)) {
+		seen.add(e);
+		if (e instanceof AggregateError) {
+			for (const sub of e.errors) {
+				if ((sub as NodeJS.ErrnoException).code === `ECONNREFUSED`) return true;
+			}
+		}
+		const code = (e as NodeJS.ErrnoException).code;
+		if (code === `ECONNREFUSED` || code === `ENOTFOUND`) return true;
+		const cause = (e as Error & { cause?: unknown }).cause;
+		if (cause instanceof AggregateError) {
+			for (const sub of cause.errors) {
+				if ((sub as NodeJS.ErrnoException).code === `ECONNREFUSED`) return true;
+			}
+		}
+		e = cause;
+	}
+	return false;
+}
+
 function getState(): TickerState {
 	if (!globalState[STARTED_SYMBOL]) {
 		globalState[STARTED_SYMBOL] = {
@@ -55,7 +81,18 @@ async function runOnce(): Promise<void> {
 		}
 	} catch (err) {
 		const e = err instanceof Error ? err : new Error(String(err));
-		logger.error({ err: e }, `outbox dispatcher tick failed`);
+		if (isDbUnreachable(err)) {
+			const now = Date.now();
+			if (now - lastDbUnreachableLogMs >= DB_UNREACHABLE_LOG_INTERVAL_MS) {
+				lastDbUnreachableLogMs = now;
+				logger.warn(
+					{ err: e },
+					`outbox dispatcher tick skipped: database unreachable (e.g. run docker compose up -d)`,
+				);
+			}
+		} else {
+			logger.error({ err: e }, `outbox dispatcher tick failed`);
+		}
 	} finally {
 		state.inFlight = false;
 		if (state.pendingKick) {
