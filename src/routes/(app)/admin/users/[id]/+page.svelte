@@ -21,7 +21,7 @@
 		<label>
 			Key
 			<select name="key" required>
-				{#each data.keys as k}
+				{#each data.keys as k (k)}
 					<option value={k}>{k}</option>
 				{/each}
 			</select>
@@ -37,7 +37,7 @@
 <section class="section">
 	<h3>Active &amp; historical</h3>
 	<ul class="ents">
-		{#each data.entitlements as e}
+		{#each data.entitlements as e (e.id)}
 			<li class:revoked={e.revokedAt !== null}>
 				<div class="row">
 					<span><strong>{e.key}</strong> · {e.source}</span>

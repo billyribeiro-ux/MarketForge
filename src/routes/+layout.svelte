@@ -1,7 +1,6 @@
 <script lang="ts">
 	import '$lib/styles/tokens.css';
 	import favicon from '$lib/assets/favicon.svg';
-	import { browser } from '$app/environment';
 	import { navigating } from '$app/state';
 	import type { Snippet } from 'svelte';
 	import type { LayoutData } from './$types';
@@ -10,8 +9,10 @@
 
 	const isNavigating = $derived(navigating.to !== null);
 
+	// Dev-only: expose the workspace root so `sv-agentation` can mount. Effects
+	// never run on the server, so no `browser` guard is needed.
 	$effect(() => {
-		if (!browser || typeof data.workspaceRoot !== 'string') return;
+		if (typeof data.workspaceRoot !== 'string') return;
 		document.documentElement.setAttribute('data-workspace-root', data.workspaceRoot);
 		return () => {
 			document.documentElement.removeAttribute('data-workspace-root');

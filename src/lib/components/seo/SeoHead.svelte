@@ -4,20 +4,42 @@
 		description,
 		siteUrl,
 		path,
-		jsonLd = null
+		jsonLd = null,
 	}: {
 		title: string;
 		description: string;
+		/** Absolute origin (with or without trailing slash). */
 		siteUrl: string;
+		/** Pathname starting with `/`. Query/hash are stripped from the canonical. */
 		path: string;
+		/** Optional JSON-LD payload; serialized safely for inline `<script>`. */
 		jsonLd?: Record<string, unknown> | null;
 	} = $props();
 
-	const origin = $derived(siteUrl.replace(/\/$/, ``));
-	const canonical = $derived(`${origin}${path.startsWith(`/`) ? path : `/${path}`}`);
-	const jsonLdSerialized = $derived(
-		jsonLd ? JSON.stringify(jsonLd).replace(/</g, `\\u003c`) : null,
-	);
+	/** Canonical href built with the URL constructor so we never produce `//path`. */
+	const canonical = $derived.by(() => {
+		try {
+			const base = siteUrl.endsWith(`/`) ? siteUrl : `${siteUrl}/`;
+			const url = new URL(path.startsWith(`/`) ? path.slice(1) : path, base);
+			url.search = ``;
+			url.hash = ``;
+			return url.toString().replace(/\/$/, ``);
+		} catch {
+			return siteUrl;
+		}
+	});
+
+	/**
+	 * Escapes `<`, `>`, and `&` so the payload can't break out of the inline
+	 * `<script>` tag or be mis-parsed as HTML.
+	 */
+	const jsonLdSerialized = $derived.by(() => {
+		if (!jsonLd) return null;
+		return JSON.stringify(jsonLd)
+			.replace(/</g, `\\u003c`)
+			.replace(/>/g, `\\u003e`)
+			.replace(/&/g, `\\u0026`);
+	});
 </script>
 
 <svelte:head>

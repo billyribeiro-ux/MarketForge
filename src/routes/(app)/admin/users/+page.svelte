@@ -27,7 +27,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		{#each data.users as u}
+		{#each data.users as u (u.id)}
 			<tr>
 				<td><a href="/admin/users/{u.id}">{u.email}</a></td>
 				<td>{u.name}</td>

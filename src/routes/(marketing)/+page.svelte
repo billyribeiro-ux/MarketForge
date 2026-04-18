@@ -49,35 +49,35 @@
 	<h2>Why MarketForge</h2>
 	<ul class="features">
 		<motion.li
-				class="card"
-				initial={reduce ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
-				whileInView={{ opacity: 1, y: 0 }}
-				transition={{ duration: reduce ? 0 : 0.35, ease: [0.16, 1, 0.3, 1] }}
-				viewport={{ once: true, margin: `-40px` }}
-				whileHover={reduce ? undefined : { y: -4 }}
-			>
+			class="card"
+			initial={reduce ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+			whileInView={{ opacity: 1, y: 0 }}
+			transition={{ duration: reduce ? 0 : 0.35, ease: [0.16, 1, 0.3, 1] }}
+			viewport={{ once: true, margin: `-40px` }}
+			whileHover={reduce ? undefined : { y: -4 }}
+		>
 			<h3>Courses</h3>
 			<p>Markdown lessons with progress saved to your account.</p>
 		</motion.li>
-			<motion.li
-				class="card"
-				initial={reduce ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
-				whileInView={{ opacity: 1, y: 0 }}
-				transition={{ duration: reduce ? 0 : 0.35, delay: reduce ? 0 : 0.06, ease: [0.16, 1, 0.3, 1] }}
-				viewport={{ once: true, margin: `-40px` }}
-				whileHover={reduce ? undefined : { y: -4 }}
-			>
+		<motion.li
+			class="card"
+			initial={reduce ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+			whileInView={{ opacity: 1, y: 0 }}
+			transition={{ duration: reduce ? 0 : 0.35, delay: reduce ? 0 : 0.06, ease: [0.16, 1, 0.3, 1] }}
+			viewport={{ once: true, margin: `-40px` }}
+			whileHover={reduce ? undefined : { y: -4 }}
+		>
 			<h3>Indicator vault</h3>
 			<p>Pine Script and ThinkScript sources for serious builders.</p>
 		</motion.li>
-			<motion.li
-				class="card"
-				initial={reduce ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
-				whileInView={{ opacity: 1, y: 0 }}
-				transition={{ duration: reduce ? 0 : 0.35, delay: reduce ? 0 : 0.12, ease: [0.16, 1, 0.3, 1] }}
-				viewport={{ once: true, margin: `-40px` }}
-				whileHover={reduce ? undefined : { y: -4 }}
-			>
+		<motion.li
+			class="card"
+			initial={reduce ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+			whileInView={{ opacity: 1, y: 0 }}
+			transition={{ duration: reduce ? 0 : 0.35, delay: reduce ? 0 : 0.12, ease: [0.16, 1, 0.3, 1] }}
+			viewport={{ once: true, margin: `-40px` }}
+			whileHover={reduce ? undefined : { y: -4 }}
+		>
 			<h3>Live room</h3>
 			<p>
 				Scheduled broadcasts and Q&amp;A for lifetime members — player, calendar, and session notes ship in-product.

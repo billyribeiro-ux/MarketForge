@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/sveltekit';
-import type { Handle, HandleServerError } from '@sveltejs/kit';
+import type { Handle, HandleServerError, ServerInit } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 import { svelteKitHandler } from 'better-auth/svelte-kit';
 import { building } from '$app/environment';
@@ -23,6 +23,9 @@ const handleLegacyIconPaths: Handle = async ({ event, resolve }) => {
 	return resolve(event);
 };
 
+// Sentry must be initialised before any request is handled. Doing it at module
+// scope is the supported pattern for @sentry/sveltekit (the `init` hook runs
+// *after* the SDK needs to be ready to wrap `handle`).
 const serverSentryDsn =
 	process.env.SENTRY_DSN?.trim() ||
 	process.env.PUBLIC_SENTRY_DSN?.trim() ||
@@ -34,9 +37,15 @@ Sentry.init({
 	environment: process.env.NODE_ENV ?? `development`,
 });
 
-// Long-running Node deployments benefit from an in-process ticker that
-// drains the outbox between cron runs. Safe to call during build — it no-ops.
-if (!building) startOutboxTicker();
+/**
+ * SvelteKit 2.10+ startup hook — runs once before the first request. We use it
+ * for side-effectful startup (the outbox ticker that long-running Node
+ * deployments rely on between cron runs). It is *not* called during `build`,
+ * so no `building` guard is needed.
+ */
+export const init: ServerInit = async () => {
+	startOutboxTicker();
+};
 
 const handleAuth: Handle = async ({ event, resolve }) => {
 	event.locals.session = null;

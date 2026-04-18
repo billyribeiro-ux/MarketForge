@@ -24,7 +24,7 @@
 	<p class="lead">All amounts are read from the database (seeded / synced from Stripe). Nothing hardcoded here.</p>
 
 	<ul class="grid">
-		{#each data.items as item}
+		{#each data.items as item (`${item.checkoutPath}:${item.recurringInterval ?? `one-time`}:${item.recurringIntervalCount}`)}
 			<li class="card">
 				<h2>{item.name}</h2>
 				<p class="price">{item.displayPrice}</p>

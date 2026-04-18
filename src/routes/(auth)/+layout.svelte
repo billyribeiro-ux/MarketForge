@@ -4,6 +4,10 @@
 	let { children }: { children: Snippet } = $props();
 </script>
 
+<svelte:head>
+	<meta name="robots" content="noindex" />
+</svelte:head>
+
 <main class="auth-shell" id="main" tabindex="-1">
 	{@render children()}
 </main>

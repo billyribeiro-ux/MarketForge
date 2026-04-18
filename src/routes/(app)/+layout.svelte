@@ -31,6 +31,10 @@
 	const items = $derived(NAV.filter((n) => (n.admin ? showAdmin : true)));
 </script>
 
+<svelte:head>
+	<meta name="robots" content="noindex" />
+</svelte:head>
+
 <div class="shell">
 	<aside class="side" aria-label="App navigation">
 		<a class="brand" href="/app">MarketForge</a>

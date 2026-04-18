@@ -12,7 +12,7 @@
 <p class="lead">Pine Script and ThinkScript downloads for members.</p>
 
 <ul class="list">
-	{#each data.indicators as ind}
+	{#each data.indicators as ind (ind.slug)}
 		<li>
 			<a href="/indicators/{ind.slug}">{ind.title}</a>
 			{#if ind.description}

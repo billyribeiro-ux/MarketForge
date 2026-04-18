@@ -12,7 +12,7 @@
 <p class="lead">Markdown lessons with saved progress.</p>
 
 <ul class="list">
-	{#each data.courses as c}
+	{#each data.courses as c (c.slug)}
 		<li>
 			<a href="/courses/{c.slug}">{c.title}</a>
 			{#if c.description}

@@ -21,7 +21,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		{#each data.entries as e}
+		{#each data.entries as e (e.id)}
 			<tr>
 				<td>{e.createdAt.toLocaleString()}</td>
 				<td>{e.action}</td>

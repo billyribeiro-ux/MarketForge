@@ -4,7 +4,22 @@ import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async () => {
 	const base = getPublicAppUrl();
-	const body = `User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /dev/\nDisallow: /admin\nSitemap: ${base}/sitemap.xml\n`;
+	const body = [
+		`User-agent: *`,
+		`Allow: /`,
+		`Disallow: /api/`,
+		`Disallow: /dev/`,
+		`Disallow: /admin`,
+		`Disallow: /account`,
+		`Disallow: /app`,
+		`Disallow: /courses`,
+		`Disallow: /indicators`,
+		`Disallow: /live`,
+		`Disallow: /checkout`,
+		`Disallow: /logout`,
+		`Sitemap: ${base}/sitemap.xml`,
+		``,
+	].join(`\n`);
 
 	return new Response(body, {
 		headers: {

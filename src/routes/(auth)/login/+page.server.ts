@@ -2,13 +2,13 @@ import { fail, redirect } from '@sveltejs/kit';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import { message, superValidate } from 'sveltekit-superforms/server';
 
+import { safeRedirectPath } from '$lib/safe-redirect';
 import { loginFormSchema } from '$lib/validation/auth-forms';
 
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ url }) => {
-	const raw = url.searchParams.get(`redirect`);
-	const redirectTo = raw?.startsWith(`/`) ? raw : `/app`;
+	const redirectTo = safeRedirectPath(url.searchParams.get(`redirect`));
 	const form = await superValidate(zod4(loginFormSchema), {
 		defaults: { email: ``, password: ``, redirectTo },
 	});
@@ -34,9 +34,6 @@ export const actions: Actions = {
 			return message(form, `Invalid email or password`, { status: 401 });
 		}
 
-		const rawNext = form.data.redirectTo;
-		const next =
-			typeof rawNext === `string` && rawNext.startsWith(`/`) ? rawNext : `/app`;
-		redirect(303, next);
+		redirect(303, safeRedirectPath(form.data.redirectTo));
 	},
 };
