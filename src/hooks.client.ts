@@ -8,10 +8,15 @@ Sentry.init({
 
 /**
  * Svelte Agentation (dev inspector): waits for `data-workspace-root`, then mounts.
- * Production builds resolve the import to a no-op stub (see `vite.config.ts`).
+ * Production builds resolve the import to a no-op stub (see `vite.config.ts`),
+ * but we also guard with `import.meta.env.DEV` so the polling loop itself is
+ * dead-code-eliminated from the production bundle — otherwise every page load
+ * spins rAF for ~2s before giving up.
  */
 export function init(): void {
-	void startAgentationWhenReady();
+	if (import.meta.env.DEV) {
+		void startAgentationWhenReady();
+	}
 }
 
 export const handleError = Sentry.handleErrorWithSentry();

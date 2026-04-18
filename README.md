@@ -23,6 +23,10 @@ pnpm dev
 - Dev personas: http://localhost:5173/dev/login-as/&lt;persona&gt; (requires `DEV_TEST_PASSWORD`)  
 - Docs: [`docs/INDEX.md`](docs/INDEX.md)
 
+## Deployment
+
+Target host: **Vercel** via `@sveltejs/adapter-vercel`. Runtime pinned to `nodejs22.x`, region `iad1`, outbox drain wired through Vercel Crons (`vercel.json`). See [`docs/DEPLOYMENT.md#target-host-vercel`](docs/DEPLOYMENT.md#target-host-vercel) for the full runbook, env-var reference, and skew-protection guidance.
+
 ## Scripts
 
 | Script | Purpose |

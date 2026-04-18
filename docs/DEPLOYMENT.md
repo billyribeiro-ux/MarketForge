@@ -33,6 +33,47 @@ Stored in the host's secret manager. Never in the repo.
 
 ---
 
+## Target host: Vercel
+
+MarketForge ships with `@sveltejs/adapter-vercel`. Choices are pinned in `svelte.config.js` and the two hot-path routes:
+
+| Concern | Setting | Location |
+|---|---|---|
+| Runtime | `nodejs22.x` | `svelte.config.js`, per-route overrides |
+| Region | `iad1` (US East) | `svelte.config.js` |
+| Default `maxDuration` | 15s (Pro ceiling) | `svelte.config.js` |
+| Stripe webhook `maxDuration` | 30s | `src/routes/api/webhooks/stripe/+server.ts` |
+| Outbox cron `maxDuration` | 60s | `src/routes/api/cron/outbox/+server.ts` |
+| Memory | 1024 MB | `svelte.config.js` |
+| Crons | `*/5 * * * *` → `/api/cron/outbox` | `vercel.json` |
+
+Edge runtime is **not** an option — `postgres`, Stripe SDK, `better-auth`, and `pino` all require Node APIs.
+
+### One-time project setup
+
+1. `vercel link` (or import the repo from the dashboard).
+2. Set Node 22 in **Project Settings → General**.
+3. Set the env vars from the "Required Secrets" table below under **Settings → Environment Variables** (Production + Preview).
+4. Set `CRON_SECRET` — Vercel Crons automatically sign requests with `Authorization: Bearer $CRON_SECRET` when this env var exists; the cron endpoint rejects anything else.
+5. Add the Stripe webhook endpoint: `https://<your-domain>/api/webhooks/stripe`, copy the signing secret into `STRIPE_WEBHOOK_SECRET`.
+6. (Recommended) Enable **Skew Protection** in **Settings → Advanced**. SvelteKit's built-in handler is already a good fallback, but skew protection prevents client-side state loss on mid-session deploys.
+
+### Local production-parity preview
+
+```bash
+pnpm i -g vercel
+vercel env pull .env.production.local   # pulls prod env into a gitignored file
+pnpm build && vercel dev                # exercises the .vercel/output artifact
+```
+
+### Preview / production promotion
+
+- Preview deployments happen on every PR — use them for QA.
+- `main` auto-deploys to production (or tag-promotion if you prefer — see "Standard Deployment Flow" below).
+- Post-deploy: watch Sentry for the first 15 minutes and inspect the Vercel Crons tab to confirm the outbox tick fires on schedule.
+
+---
+
 ## First-Time Staging Setup
 
 1. Provision hosting (Vercel/Cloudflare) + managed Postgres.

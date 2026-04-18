@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { superForm } from 'sveltekit-superforms';
 
 	import type { PageData } from './$types';
@@ -9,8 +10,10 @@
 	const { form, errors, enhance, message } = superForm(data.form);
 
 	// Stamp the form with a client-side load timestamp so the server can reject
-	// submissions that arrive faster than a human could type them.
-	$effect(() => {
+	// submissions that arrive faster than a human could type them. This is a
+	// one-shot mount-time write — running it inside `$effect` would re-subscribe
+	// to the store it mutates and risk a render loop.
+	onMount(() => {
 		$form.formLoadedAt = Date.now();
 	});
 </script>

@@ -37,7 +37,7 @@
 		"@commitlint/config-conventional": "^20.5.0",
 		"@iconify/svelte": "^5.2.1",
 		"@playwright/test": "^1.59.1",
-		"@sveltejs/adapter-auto": "^7.0.1",
+		"@sveltejs/adapter-vercel": "^6.3.3",
 		"@sveltejs/kit": "^2.57.1",
 		"@sveltejs/vite-plugin-svelte": "^7.0.0",
 		"@types/node": "^25.6.0",

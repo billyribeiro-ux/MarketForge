@@ -10,6 +10,20 @@ import { enqueueStripeWebhookNotifications } from '$lib/server/stripe/webhook-no
 import { dispatchStripeEvent } from '$lib/server/stripe/webhook-processor';
 import type { RequestHandler } from './$types';
 
+/**
+ * Stripe retries a webhook if it doesn't receive a 2xx within its own timeout
+ * (~30s today, see https://stripe.com/docs/webhooks#retries). We raise the
+ * function ceiling above the adapter default so a slow Postgres write doesn't
+ * force Stripe to redeliver — our idempotency guard below handles retries, but
+ * avoiding them keeps the dashboard clean and the dispatcher honest.
+ *
+ * @type {import('@sveltejs/adapter-vercel').Config}
+ */
+export const config = {
+	runtime: `nodejs22.x`,
+	maxDuration: 30,
+};
+
 export const POST: RequestHandler = async ({ request }) => {
 	const secret = process.env.STRIPE_WEBHOOK_SECRET?.trim();
 	if (!secret) {
